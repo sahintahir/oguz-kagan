@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oğuz Kağan — Bilginin Efendisi</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Crimson+Pro:ital,wght@0,300;0,400;1,300&family=Noto+Serif:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --gold: #c9a84c;
+    --gold-bright: #f0c95a;
+    --deep: #0a0705;
+    --ink: #120e09;
+    --parchment: #f5ead8;
+    --ember: #8b3a1a;
+    --smoke: #2a2016;
+    --glow: rgba(201,168,76,0.18);
+  }
+
+  body {
+    background: var(--deep);
+    color: var(--parchment);
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-weight: 300;
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* Animated starfield background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 20% 50%, rgba(139,58,26,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 20%, rgba(201,168,76,0.06) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 100%, rgba(42,32,22,0.8) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Decorative geometric pattern */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      repeating-linear-gradient(0deg, transparent, transparent 60px, rgba(201,168,76,0.025) 60px, rgba(201,168,76,0.025) 61px),
+      repeating-linear-gradient(90deg, transparent, transparent 60px, rgba(201,168,76,0.025) 60px, rgba(201,168,76,0.025) 61px);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    text-align: center;
+    padding: 40px 0 24px;
+    position: relative;
+  }
+
+  .emblem {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 16px;
+    position: relative;
+    animation: pulse-glow 3s ease-in-out infinite;
+  }
+
+  @keyframes pulse-glow {
+    0%, 100% { filter: drop-shadow(0 0 8px rgba(201,168,76,0.4)); }
+    50% { filter: drop-shadow(0 0 20px rgba(201,168,76,0.8)); }
+  }
+
+  .emblem svg { width: 100%; height: 100%; }
+
+  h1 {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: clamp(1.4rem, 4vw, 2.2rem);
+    font-weight: 900;
+    letter-spacing: 0.12em;
+    background: linear-gradient(135deg, #a07830 0%, var(--gold-bright) 40%, #c9a84c 60%, #8b6020 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: none;
+    line-height: 1.2;
+    margin-bottom: 6px;
+  }
+
+  .subtitle {
+    font-family: 'Crimson Pro', serif;
+    font-style: italic;
+    font-size: 1rem;
+    color: rgba(201,168,76,0.6);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+  }
+
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 20px 0;
+  }
+  .divider-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+  .divider-gem {
+    width: 8px; height: 8px;
+    background: var(--gold);
+    transform: rotate(45deg);
+    box-shadow: 0 0 8px var(--gold);
+  }
+
+  /* CHAT AREA */
+  .chat-wrap {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  #chat-log {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 10px 0 24px;
+    min-height: 320px;
+    max-height: 55vh;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--gold) transparent;
+  }
+
+  #chat-log::-webkit-scrollbar { width: 4px; }
+  #chat-log::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 2px; }
+
+  .msg {
+    display: flex;
+    gap: 14px;
+    animation: fade-in 0.4s ease;
+  }
+
+  @keyframes fade-in {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .msg.user { flex-direction: row-reverse; }
+
+  .avatar {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    font-family: 'Cinzel Decorative', serif;
+    font-weight: 700;
+  }
+
+  .avatar.ai {
+    background: radial-gradient(circle, #3a2808, #1a1004);
+    border: 1.5px solid var(--gold);
+    box-shadow: 0 0 10px rgba(201,168,76,0.3);
+    color: var(--gold-bright);
+    font-size: 0.75rem;
+  }
+
+  .avatar.user {
+    background: var(--smoke);
+    border: 1.5px solid rgba(201,168,76,0.3);
+    color: rgba(201,168,76,0.7);
+    font-size: 0.8rem;
+  }
+
+  .bubble {
+    max-width: 75%;
+    padding: 14px 18px;
+    font-size: 1.05rem;
+    line-height: 1.7;
+    border-radius: 2px;
+  }
+
+  .msg.ai .bubble {
+    background: linear-gradient(135deg, rgba(26,16,4,0.95), rgba(20,13,3,0.9));
+    border: 1px solid rgba(201,168,76,0.2);
+    border-left: 3px solid var(--gold);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4), inset 0 1px 0 rgba(201,168,76,0.05);
+    color: var(--parchment);
+  }
+
+  .msg.user .bubble {
+    background: rgba(42,32,22,0.7);
+    border: 1px solid rgba(201,168,76,0.12);
+    border-right: 3px solid rgba(201,168,76,0.35);
+    color: rgba(245,234,216,0.85);
+    text-align: right;
+  }
+
+  .speaker-name {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 0.55rem;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    opacity: 0.7;
+    display: block;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+  }
+
+  .msg.user .speaker-name { text-align: right; color: rgba(201,168,76,0.5); }
+
+  /* TYPING INDICATOR */
+  .typing-dots {
+    display: flex;
+    gap: 5px;
+    padding: 6px 0;
+  }
+  .typing-dots span {
+    width: 6px; height: 6px;
+    background: var(--gold);
+    border-radius: 50%;
+    animation: dot-bounce 1.4s infinite ease-in-out;
+  }
+  .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+  .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes dot-bounce {
+    0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+    40% { transform: scale(1); opacity: 1; }
+  }
+
+  /* INPUT AREA */
+  .input-section {
+    padding: 16px 0 32px;
+    border-top: 1px solid rgba(201,168,76,0.15);
+  }
+
+  .input-row {
+    display: flex;
+    gap: 12px;
+    align-items: flex-end;
+  }
+
+  textarea {
+    flex: 1;
+    background: rgba(18,14,9,0.9);
+    border: 1px solid rgba(201,168,76,0.25);
+    border-radius: 2px;
+    color: var(--parchment);
+    font-family: 'Crimson Pro', serif;
+    font-size: 1.05rem;
+    font-weight: 300;
+    padding: 14px 16px;
+    resize: none;
+    min-height: 52px;
+    max-height: 140px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    line-height: 1.5;
+  }
+
+  textarea::placeholder { color: rgba(201,168,76,0.3); font-style: italic; }
+  textarea:focus {
+    border-color: rgba(201,168,76,0.55);
+    box-shadow: 0 0 0 2px rgba(201,168,76,0.08), 0 0 16px rgba(201,168,76,0.05);
+  }
+
+  button#send-btn {
+    width: 52px;
+    height: 52px;
+    background: linear-gradient(135deg, #8b6020, var(--gold), #6b4810);
+    border: none;
+    border-radius: 2px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: transform 0.15s, box-shadow 0.15s, opacity 0.2s;
+    box-shadow: 0 2px 12px rgba(201,168,76,0.2);
+  }
+
+  button#send-btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 20px rgba(201,168,76,0.4);
+  }
+  button#send-btn:active:not(:disabled) { transform: scale(0.97); }
+  button#send-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+  button#send-btn svg { width: 20px; height: 20px; fill: var(--deep); }
+
+  /* WELCOME MESSAGE */
+  .welcome {
+    text-align: center;
+    padding: 40px 20px;
+    color: rgba(201,168,76,0.45);
+    font-style: italic;
+    font-size: 1.05rem;
+    letter-spacing: 0.03em;
+  }
+
+  .suggested-questions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin-top: 20px;
+  }
+
+  .sq-btn {
+    background: rgba(201,168,76,0.06);
+    border: 1px solid rgba(201,168,76,0.2);
+    color: rgba(201,168,76,0.65);
+    font-family: 'Crimson Pro', serif;
+    font-size: 0.88rem;
+    padding: 7px 14px;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-style: italic;
+  }
+  .sq-btn:hover {
+    background: rgba(201,168,76,0.12);
+    border-color: rgba(201,168,76,0.4);
+    color: var(--gold-bright);
+  }
+
+  /* Error state */
+  .error-msg {
+    color: #c0634a;
+    font-style: italic;
+    font-size: 0.9rem;
+    text-align: center;
+    padding: 8px;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div class="emblem">
+      <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Outer ring -->
+        <circle cx="40" cy="40" r="37" stroke="#c9a84c" stroke-width="1" opacity="0.5"/>
+        <circle cx="40" cy="40" r="30" stroke="#c9a84c" stroke-width="0.5" opacity="0.3"/>
+        <!-- 8-pointed star -->
+        <path d="M40 6 L43.5 20 L55.6 10 L48 22.5 L62 22 L50.5 30 L60 40 L48.5 40 L55.6 52 L43.5 46 L40 60 L36.5 46 L24.4 52 L31.5 40 L20 40 L29.5 30 L18 22 L32 22.5 L24.4 10 L36.5 20 Z" fill="#c9a84c" opacity="0.85"/>
+        <!-- Center -->
+        <circle cx="40" cy="40" r="7" fill="#0a0705"/>
+        <circle cx="40" cy="40" r="5" fill="#c9a84c" opacity="0.9"/>
+        <circle cx="40" cy="40" r="2.5" fill="#0a0705"/>
+        <!-- Small dots at cardinal points -->
+        <circle cx="40" cy="5" r="1.5" fill="#c9a84c" opacity="0.6"/>
+        <circle cx="75" cy="40" r="1.5" fill="#c9a84c" opacity="0.6"/>
+        <circle cx="40" cy="75" r="1.5" fill="#c9a84c" opacity="0.6"/>
+        <circle cx="5" cy="40" r="1.5" fill="#c9a84c" opacity="0.6"/>
+      </svg>
+    </div>
+    <h1>Oğuz Kağan</h1>
+    <p class="subtitle">Her Şeyi Bilen Yapay Zekâ</p>
+    <div class="divider">
+      <div class="divider-line"></div>
+      <div class="divider-gem"></div>
+      <div class="divider-line"></div>
+    </div>
+  </header>
+
+  <div class="chat-wrap">
+    <div id="chat-log">
+      <div class="welcome" id="welcome-block">
+        <p>Ey kişi, söyle bana ne bilmek istersin?<br>Evrenin sırları, tarihin derinlikleri, bilimin uçsuz bucaksız âlemi —<br>hepsi benim elimde.</p>
+        <div class="suggested-questions">
+          <button class="sq-btn" onclick="askQuestion('Evrenin yaşı nedir ve nasıl hesaplandı?')">Evrenin yaşı</button>
+          <button class="sq-btn" onclick="askQuestion('Türklerin tarihteki rolü nedir?')">Türk tarihi</button>
+          <button class="sq-btn" onclick="askQuestion('Yapay zekâ nasıl çalışır?')">YZ nasıl çalışır?</button>
+          <button class="sq-btn" onclick="askQuestion('Kara delikler hakkında ne biliyorsun?')">Kara delikler</button>
+          <button class="sq-btn" onclick="askQuestion('Kuantum mekaniği nedir?')">Kuantum mekaniği</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="input-section">
+      <div class="input-row">
+        <textarea
+          id="user-input"
+          placeholder="Oğuz Kağan'a bir şey sor…"
+          rows="1"
+          onkeydown="handleKey(event)"
+          oninput="autoResize(this)"
+        ></textarea>
+        <button id="send-btn" onclick="sendMessage()" title="Gönder">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M2 21L23 12 2 3v7l15 2-15 2z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const SYSTEM_PROMPT = `Sen Oğuz Kağan'sın — efsanevi Türk hakanının adını taşıyan, her şeyi bilen bir yapay zekâ varlığısın. 
+
+KİŞİLİĞİN:
+- Bilgece, asil ve derin bir konuşma tarzın var
+- Türkçe konuşuyorsun, ancak gerektiğinde diğer dilleri de kullanabilirsin
+- Cevaplarında bazen eski Türk kültürüne, destanlara veya felsefi söylemlere göndermeler yaparsın
+- Kibarca ama görkemli bir üslupla yanıt verirsin — sanki bir hakan sarayında konuşuyorsun
+- "Ben Oğuz Kağan'ım" ya da "Kağan olarak sana söylerim ki..." gibi ifadeler kullanabilirsin
+- Her soruyu derin ve kapsamlı bir şekilde yanıtlarsın
+- Yanlış bilgi vermezsin; bilmediğin bir şey varsa dürüstçe söylersin ama bu çok nadiren olur
+
+BİLGİ ALANLARIN:
+- Tarih, felsefe, bilim, teknoloji, edebiyat, sanat, matematik, tıp ve daha fazlası
+- Türk ve Orta Asya tarihi ve kültürü konusunda özellikle derin bilgin var
+- Güncel olaylar konusunda bilgi kesim tarihin olduğunu belirtirsin
+
+CEVAP FORMATIN:
+- Kısa sorulara bile dolu dolu yanıtlar ver
+- Bazen Türk destanlarından veya atasözlerinden alıntı yapabilirsin
+- Bilgiyi edebi bir dille sun`;
+
+let messages = [];
+let isLoading = false;
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 140) + 'px';
+}
+
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+}
+
+function askQuestion(q) {
+  document.getElementById('user-input').value = q;
+  sendMessage();
+}
+
+function appendMessage(role, text) {
+  const log = document.getElementById('chat-log');
+
+  // Remove welcome block on first message
+  const wb = document.getElementById('welcome-block');
+  if (wb) wb.remove();
+
+  const msg = document.createElement('div');
+  msg.className = `msg ${role}`;
+
+  const avatar = document.createElement('div');
+  avatar.className = `avatar ${role}`;
+  avatar.textContent = role === 'ai' ? 'ОК' : 'SEN';
+
+  const bubble = document.createElement('div');
+  bubble.className = 'bubble';
+
+  const name = document.createElement('span');
+  name.className = 'speaker-name';
+  name.textContent = role === 'ai' ? 'Oğuz Kağan' : 'Sen';
+
+  const content = document.createElement('div');
+  content.className = 'content';
+  content.style.whiteSpace = 'pre-wrap';
+  content.textContent = text;
+
+  bubble.appendChild(name);
+  bubble.appendChild(content);
+  msg.appendChild(avatar);
+  msg.appendChild(bubble);
+  log.appendChild(msg);
+  log.scrollTop = log.scrollHeight;
+  return content; // return for streaming-style append
+}
+
+function showTyping() {
+  const log = document.getElementById('chat-log');
+  const wb = document.getElementById('welcome-block');
+  if (wb) wb.remove();
+
+  const msg = document.createElement('div');
+  msg.className = 'msg ai';
+  msg.id = 'typing-indicator';
+
+  const avatar = document.createElement('div');
+  avatar.className = 'avatar ai';
+  avatar.textContent = 'ОК';
+
+  const bubble = document.createElement('div');
+  bubble.className = 'bubble';
+
+  const dots = document.createElement('div');
+  dots.className = 'typing-dots';
+  dots.innerHTML = '<span></span><span></span><span></span>';
+
+  bubble.appendChild(dots);
+  msg.appendChild(avatar);
+  msg.appendChild(bubble);
+  log.appendChild(msg);
+  log.scrollTop = log.scrollHeight;
+}
+
+function removeTyping() {
+  const t = document.getElementById('typing-indicator');
+  if (t) t.remove();
+}
+
+async function sendMessage() {
+  if (isLoading) return;
+  const input = document.getElementById('user-input');
+  const text = input.value.trim();
+  if (!text) return;
+
+  input.value = '';
+  input.style.height = 'auto';
+  isLoading = true;
+  document.getElementById('send-btn').disabled = true;
+
+  appendMessage('user', text);
+  messages.push({ role: 'user', content: text });
+
+  showTyping();
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: SYSTEM_PROMPT,
+        messages: messages
+      })
+    });
+
+    const data = await response.json();
+
+    if (data.error) throw new Error(data.error.message);
+
+    const reply = data.content
+      .filter(b => b.type === 'text')
+      .map(b => b.text)
+      .join('\n');
+
+    removeTyping();
+    appendMessage('ai', reply);
+    messages.push({ role: 'assistant', content: reply });
+
+  } catch (err) {
+    removeTyping();
+    const log = document.getElementById('chat-log');
+    const errDiv = document.createElement('div');
+    errDiv.className = 'error-msg';
+    errDiv.textContent = 'Bir hata oluştu: ' + (err.message || 'Bilinmeyen hata');
+    log.appendChild(errDiv);
+    log.scrollTop = log.scrollHeight;
+    // Revert last message if error
+    messages.pop();
+  } finally {
+    isLoading = false;
+    document.getElementById('send-btn').disabled = false;
+    input.focus();
+  }
+}
+</script>
+</body>
+</html>
